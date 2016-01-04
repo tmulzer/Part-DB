@@ -757,6 +757,12 @@
          */
         public function set_instock($new_instock)
         {
+            $part_id = $this->get_id();
+            $quantity = $new_instock - $this->get_instock();
+            $value = number_format(($this->get_average_price(false,abs($quantity),1) * $quantity), 5, ".", "");
+            $username = $_SERVER['PHP_AUTH_USER'];
+            $this->database->execute("INSERT INTO movement (part_id, quantity, value, user) VALUES ($part_id, $quantity, $value, '$username');");
+
             $this->set_attributes(array('instock' => $new_instock));
         }
 
@@ -1814,6 +1820,7 @@
                                         'order_quantity'                => 1));
                                         // the column "datetime_added" will be automatically filled by MySQL
                                         // the column "last_modified" will be filled in the function check_values_validity()
+
 
         }
 
